@@ -21,11 +21,18 @@ class Check
         $id=1;
         $maneger = Maneger::where('id', $id)->select()->first();
         if($maneger->password == $pass){
-            return $next($request);
+            if($maneger->status == true){
+                return $next($request);
+            }else{
+                return response()->json([
+                    'status' => 0 ,
+                    'message' => 'Your session has expired, please log in again.'
+                ]);
+            }
         }else{
             return response()->json([
                 'status' => 0 ,
-                'message' => "It's forbidden"
+                'message' => 'Forbidden'
             ]);
         }
     }

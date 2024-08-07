@@ -13,6 +13,7 @@ use App\Http\Controllers\SuggestionController;
 use App\Http\Controllers\TargetController;
 use App\Http\Controllers\TargetpointController;
 use App\Models\Callnum;
+use App\Models\Maneger;
 use App\Models\Targetpoint;
 use Illuminate\Support\Facades\Route;
 
@@ -54,6 +55,11 @@ Route::middleware('Check')->group(function(){
 
     //get employee details
     Route::get('/employee/get', [EmployeeController::class, 'get']);
+
+    //get employees by name
+    Route::get('/employee/name', [EmployeeController::class, 'get_name']);
+
+    // Route::get('/session', [ManegerController::class, 'end_session']);
 
     //add evaluation rule
     Route::post('/evaluation', [EvaluationController::class, 'add_evaluation']);

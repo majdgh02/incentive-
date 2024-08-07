@@ -21,6 +21,8 @@ class ManegerController extends Controller
             ]);
         }else{
             if($maneger->password == $r->password){
+                $maneger->status = true;
+                $maneger->save();
                 return response()->json([
                     'status' => 1 ,
                     'message' => 'logged in successfully'
@@ -72,11 +74,9 @@ class ManegerController extends Controller
         }
     }
 
-    // public function add_points(Request $r){
-    //     $v = $r->validate([
-    //         'id' => 'required|exsist:employees' ,
-    //         'points' => 'required|ineger',
-    //         'case' => 'required|longtext'
-    //         ]);
-    // }
+//     public function end_session(){
+//         $m = Maneger::where('id', 1)->select()->first();
+//         $m->status = false;
+//         $m->save();
+//     }
 }

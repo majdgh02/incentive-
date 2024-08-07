@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('username');
             $table->string('password');
+            $table->boolean('status')->default(false);
             $table->timestamps();
         });
     }

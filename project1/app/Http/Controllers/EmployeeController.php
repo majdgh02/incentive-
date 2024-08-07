@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules\Exists;
 
 class EmployeeController extends Controller
 {
@@ -19,7 +20,7 @@ class EmployeeController extends Controller
             'join' => 'required|date',
             'edu' => 'required' ,
             'section' => 'required',
-            'username' => 'required',
+            'username' => 'required|unique:employees',
             'password' => 'required'
         ]);
 
@@ -134,12 +135,30 @@ class EmployeeController extends Controller
         if(empty($employee)){
             return response()->json([
                 'status' => 0 ,
-                'message' => 'employee is not exsist'
+                'message' => 'Employee is not exsist'
             ]);
         }else{
             return response()->json([
                 'status' => 1 ,
                 'message' => $employee
+            ]);
+        }
+    }
+
+    // get employee delails by name
+    public function get_name(Request $r){
+        $r_array = $r->all();
+        if(key_exists('name', $r_array)){
+            $e = Employee::where('name' , 'like' , "%$r->name%")->get();
+            return response()->json([
+                'status' => 1 ,
+                'message' => $e
+            ]);
+        }else{
+            $e = Employee::all();
+            return response()->json([
+                'status' => 0 ,
+                'message' => $e
             ]);
         }
     }
