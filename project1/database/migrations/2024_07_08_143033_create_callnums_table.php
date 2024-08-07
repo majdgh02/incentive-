@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('callnums', function (Blueprint $table) {
             $table->id();
             $table->foreignId('employee_id')->constrained('employees');
+            $table->foreignId('evaluation_id')->constrained('evaluations');
             $table->integer('num');
             $table->string('month');
             $table->string('year');

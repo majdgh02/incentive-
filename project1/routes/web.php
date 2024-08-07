@@ -32,7 +32,7 @@ Route::post('/login', [ManegerController::class, 'login']);
 
 Route::middleware('Check')->group(function(){
     //logout
-    Route::post('/out', [ManegerController::class, 'out']);
+    Route::get('/out', [ManegerController::class, 'out']);
 
     //password change
     Route::post('/password/change', [ManegerController::class, 'password_change']);
@@ -50,10 +50,10 @@ Route::middleware('Check')->group(function(){
     Route::post('/employee/update/status', [EmployeeController::class, 'update_status']);
 
     //delete employee
-    Route::post('/employee/delete', [EmployeeController::class, 'delete']);
+    Route::delete('/employee/delete', [EmployeeController::class, 'delete']);
 
     //get employee details
-    Route::post('/employee/get', [EmployeeController::class, 'get']);
+    Route::get('/employee/get', [EmployeeController::class, 'get']);
 
     //add evaluation rule
     Route::post('/evaluation', [EvaluationController::class, 'add_evaluation']);
@@ -62,19 +62,24 @@ Route::middleware('Check')->group(function(){
     Route::post('/evaluation/update', [EvaluationController::class, 'update_evaluation']);
 
     //delete evaluation rule
-    Route::post('/evaluation/delete', [EvaluationController::class, 'delete_evaluation']);
+    Route::delete('/evaluation/delete', [EvaluationController::class, 'delete_evaluation']);
 
     //get evaluation rule
-    Route::post('/evaluation/get', [EvaluationController::class, 'get_evaluation']);
+    Route::get('/evaluation/get', [EvaluationController::class, 'get_evaluation']);
 
     //put Target Points from maneger for an employee
     Route::post('/puttargetmaneger', [TargetpointController::class, 'add_targetpoint']);
 
     //delete Target Points
-    Route::post('/puttargetmaneger/delete', [TargetpointController::class, 'delet_targetpoint']);
+    Route::delete('/puttargetmaneger/delete', [TargetpointController::class, 'delet_targetpoint']);
 
     //get Target points for a month "from maneger"
-    Route::post('/puttargetmaneger/get', [TargetpointController::class, 'get_targetpoint_month']);
+    Route::get('/puttargetmaneger/get', [TargetpointController::class, 'get_targetpoint_month']);
+
+    // add evaluation
+    Route::post('/evaluations/add', [EvaluationController::class, 'add_evaluation_emp']);
+
+    //////////////////////////////////////////////////////
 
     //create call number for an employee
     Route::post('/callnum', [CallnumController::class, 'add_calnum']);

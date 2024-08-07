@@ -12,7 +12,7 @@ class TargetpointController extends Controller
 {
     public function add_targetpoint(Request $r , TargetController $t){
         $validated = $r->validate([
-            'id' => 'required|exists:employees',
+            'employee_id' => 'required|exists:employees,id',
             'points' => 'required|integer',
             'case' => 'required',
             'time' => 'required|date'
@@ -22,16 +22,16 @@ class TargetpointController extends Controller
         $interval = $date->diff($time);
         $interval->m++;
         $interval->y++;
-        $targetpoint = Targetpoint::where([['employee_id' , $r->id],['month' , $interval->m] , ['year' , $interval->y]])->select()->first();
+        $targetpoint = Targetpoint::where([['employee_id' , $r->employee_id],['month' , $interval->m] , ['year' , $interval->y]])->select()->first();
         if(empty($targetpoint)){
             $new= new Targetpoint();
-            $new->employee_id = $r->id;
+            $new->employee_id = $r->employee_id;
             $new->points = $r->points;
             $new->case = $r->case;
             $new->month = $interval->m;
             $new->year = $interval->y;
             $new->save();
-            $t->put_target_point($r->id, null, $r->points, $interval->m, $interval->y);
+            $t->put_target_point($r->employee_id, null, $r->points, $interval->m, $interval->y);
             return response()->json([
                 'status' => 1 ,
                 'message' => 'target points added successfully'
@@ -41,7 +41,7 @@ class TargetpointController extends Controller
             $targetpoint->points = $r->points;
             $targetpoint->case = $r->case;
             $targetpoint->save();
-            $t->put_target_point($r->id, $old_points, $r->points, $interval->m, $interval->y);
+            $t->put_target_point($r->employee_id, $old_points, $r->points, $interval->m, $interval->y);
             return response()->json([
                 'status' => 1 ,
                 'message' => 'Target points updated successfully'

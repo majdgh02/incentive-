@@ -17,12 +17,10 @@ class Check
      */
     public function handle(Request $request, Closure $next)
     {
-        $validation = $request->validate([
-            'p' => 'required'
-        ]);
+        $pass = $request->header('password');
         $id=1;
         $maneger = Maneger::where('id', $id)->select()->first();
-        if($maneger->password == $request->p){
+        if($maneger->password == $pass){
             return $next($request);
         }else{
             return response()->json([

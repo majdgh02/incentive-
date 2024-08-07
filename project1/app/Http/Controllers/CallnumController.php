@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Callnum;
 use App\Models\Employee;
+use App\Models\Evaluation;
 use DateTime;
 use Illuminate\Http\Request;
 
@@ -11,7 +12,8 @@ class CallnumController extends Controller
 {
     public function add_calnum(Request $r){
         $validated = $r->validate([
-            'id' => 'required|exists:employees',
+            'employee_id' => 'required|exists:employees,id',
+            'evaluation_id' => 'required|exists:evaluation,id',
             'num' => 'required',
             'time' => 'required|date'
         ]);
@@ -20,10 +22,15 @@ class CallnumController extends Controller
         $interval = $date->diff($time);
         $interval->m++;
         $interval->y++;
-        $callnum = Callnum::where([['employee_id' , $r->id],['month' , $interval->m] , ['year' , $interval->y]])->select()->first();
+        $callnum = Callnum::where([['employee_id' , $r->employee_id],['month' , $interval->m] , ['year' , $interval->y]])->select()->first();
+        $e = Evaluation::where('id' , $r->evaluation_id)->select()->first();
+        if($e->from<=$r->num && $e->to>=$r->num){
+            
+        }
         if(empty($callnum)){
             $new= new Callnum;
-            $new->employee_id = $r->id;
+            $new->employee_id = $r->employee_id;
+            $new->evaluation_id = $r->evaluation_id;
             $new->num = $r->num;
             $new->month = $interval->m;
             $new->year = $interval->y;
@@ -33,6 +40,7 @@ class CallnumController extends Controller
                 'message' => 'callnumber inrolled successfully'
                 ]);
         }else{
+
             $callnum->num = $r->num;
             $callnum->save();
             return response()->json([

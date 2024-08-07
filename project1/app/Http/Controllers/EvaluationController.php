@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class EvaluationController extends Controller
 {
+    ///////////////////////////rules////////////////////////
     public function add_evaluation(Request $r){
         $validated = $r->validate([
             'name' => 'required|unique:evaluations',
@@ -118,5 +119,9 @@ class EvaluationController extends Controller
             'status' => 1,
             'message' => $evaluations
         ]);
+    }
+
+    ////////////////for employee////////////////////////
+    public function add_evaluation_emp(Request $r){
     }
 }
