@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('id_num', 11);
             $table->string('address');
-            $table->string('home_num', 10);
-            $table->string('phone_num', 10);
+            $table->string('home_num', 14);
+            $table->string('phone_num', 14);
             $table->date('birth');
             $table->date('join');
             $table->string('edu');
