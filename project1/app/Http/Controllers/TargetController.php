@@ -19,20 +19,20 @@ class TargetController extends Controller
             $target->price = $r->price;
             $target->save();
             return response()->json([
-                'status' => 1 ,
-                'message' => 'target value created'
-            ]);
+                'status' => true,
+                'message' => 'Target value created'
+            ],201);
         }
         else{
             $t->price = $r->price;
             $t->save();
             return response()->json([
-                'status' => 1 ,
-                'message' => 'target value Updated'
-            ]);
+                'status' => true,
+                'message' => 'Target value Updated'
+            ],200);
         }
     }
-
+    ////// Helperes functions //////////////
     public function put_target_point($id, $old_points, $new_points, $month, $year){
         $e = DB::table('employee_target')->where([['employee_id' , $id],['month' , $month] , ['year' , $year]])->select()->first();
         if(empty($e)){
@@ -54,5 +54,5 @@ class TargetController extends Controller
         $new = $e->value - $old_points;
         DB::table('employee_target')->where([['employee_id' , $id],['month' , $month] , ['year' , $year]])->update(['value' => $new]);
     }
-
+    /////////////////
 }

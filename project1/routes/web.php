@@ -59,8 +59,6 @@ Route::middleware('Check')->group(function(){
     //get employees by name
     Route::get('/employee/name', [EmployeeController::class, 'get_name']);
 
-    // Route::get('/session', [ManegerController::class, 'end_session']);
-
     //add evaluation rule
     Route::post('/evaluation', [EvaluationController::class, 'add_evaluation']);
 

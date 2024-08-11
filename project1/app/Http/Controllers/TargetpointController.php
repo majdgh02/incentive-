@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Employee;
 use App\Models\Target;
 use App\Models\Targetpoint;
 use DateTime;
@@ -17,6 +18,13 @@ class TargetpointController extends Controller
             'case' => 'required',
             'time' => 'required|date'
         ]);
+        $e = Employee::where('id', $r->employee_id)->get();
+        if(empty($e)){
+            return response()->json([
+                'status' => false,
+                'message' => 'Employee is not exsist'
+            ],404);
+        }
         $date = new DateTime($r->time);
         $time = new DateTime('0001-01-01 00:00:00');
         $interval = $date->diff($time);
@@ -33,9 +41,9 @@ class TargetpointController extends Controller
             $new->save();
             $t->put_target_point($r->employee_id, null, $r->points, $interval->m, $interval->y);
             return response()->json([
-                'status' => 1 ,
+                'status' => true ,
                 'message' => 'target points added successfully'
-            ]);
+            ],201);
         }else{
             $old_points = $targetpoint->points;
             $targetpoint->points = $r->points;
@@ -43,9 +51,9 @@ class TargetpointController extends Controller
             $targetpoint->save();
             $t->put_target_point($r->employee_id, $old_points, $r->points, $interval->m, $interval->y);
             return response()->json([
-                'status' => 1 ,
+                'status' => true ,
                 'message' => 'Target points updated successfully'
-                ]);
+            ],200);
         }
     }
 
@@ -53,13 +61,19 @@ class TargetpointController extends Controller
         $validated = $r->validate([
             'id' => 'required|exists:targetpoints',
         ]);
-        $targetpoint = Targetpoint::where('id' , $r->id)->select()->first();
+        $targetpoint = Targetpoint::where('id' , $r->id)->get();
+        if(empty($targetpoint)){
+            return response()->json([
+                'status' => false ,
+                'message' => 'Target points is not exists'
+                ],404);
+        }
         $t->delete_target_points($targetpoint->employee_id, $targetpoint->points, $targetpoint->month, $targetpoint->year);
         Targetpoint::where('id' , $r->id)->delete();
         return response()->json([
-            'status' => 1 ,
+            'status' => true ,
             'message' => 'Target Points deleted successfully'
-        ]);
+        ],200);
     }
 
     public function get_targetpoint_month(Request $r){
@@ -73,8 +87,9 @@ class TargetpointController extends Controller
         $interval->y++;
         $targetpoint = Targetpoint::where([['month' , $interval->m] , ['year' , $interval->y]])->get();
         return response()->json([
-            'status' => 1,
-            'message' => $targetpoint
-        ]);
+            'status' => true,
+            'message' => "This is the target point matches with $r->date",
+            'data' => $targetpoint
+        ],200);
     }
 }

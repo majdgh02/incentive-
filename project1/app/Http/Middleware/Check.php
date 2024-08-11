@@ -25,15 +25,13 @@ class Check
                 return $next($request);
             }else{
                 return response()->json([
-                    'status' => 0 ,
                     'message' => 'Your session has expired, please log in again.'
-                ]);
+                ],401);
             }
         }else{
             return response()->json([
-                'status' => 0 ,
                 'message' => 'Forbidden'
-            ]);
+            ],403);
         }
     }
 }

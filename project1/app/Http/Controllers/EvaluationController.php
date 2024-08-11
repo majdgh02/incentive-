@@ -18,9 +18,9 @@ class EvaluationController extends Controller
         ]);
         if($r->to<$r->from){
             return response()->json([
-                'status' => 0,
-                'message' => '"to" must be bigger than "from"'
-            ]);
+                'status' => false,
+                'message' => '"To" must be bigger than "From"'
+            ],422);
         }
         $evaluations = Evaluation::where('type' , $r->type)->get();
         $check = true;
@@ -44,14 +44,14 @@ class EvaluationController extends Controller
             $new->value = $r->value;
             $new->save();
             return response()->json([
-                'status' => 1,
+                'status' => true,
                 'message' => 'Evaluation rule inrolled successfully'
-            ]);
+            ],201);
         }else{
             return response()->json([
-                'status' => 0,
+                'status' => false,
                 'message' => 'the range you have inrolled is not correct'
-            ]);
+            ],422);
         }
     }
 
@@ -66,9 +66,9 @@ class EvaluationController extends Controller
         ]);
         if($r->to<$r->from){
             return response()->json([
-                'status' => 0,
+                'status' => false,
                 'message' => 'to must be bigger than from'
-            ]);
+            ],422);
         }
         $evaluations = Evaluation::where('type' , $r->type)->wherenot('id' , $r->id)->get();
         $check = true;
@@ -91,37 +91,47 @@ class EvaluationController extends Controller
             $eva->value = $r->value;
             $eva->save();
             return response()->json([
-                'status' => 1,
+                'status' => true,
                 'message' => 'Evaluation rule updated successfully'
-            ]);
+            ],200);
         }else{
             return response()->json([
-                'status' => 0,
+                'status' => false,
                 'message' => 'the range you have inrolled is not correct'
-            ]);
+            ],422);
         }
     }
 
     public function delete_evaluation(Request $r){
         $validated = $r->validate([
-            'id' => 'required|exists:evaluations'
+            'id' => 'required'
         ]);
-        Evaluation::where('id' , $r->id)->delete();
-        return response()->json([
-            'status' => 1,
+        $e = Evaluation::where('id' , $r->id)->get();
+        if(empty($e)){
+            return response()->json([
+                'status' => false,
+                'message' => 'Evaluation rule is not exsist'
+            ],404);
+        }else{
+            Evaluation::where('id', $r->id)->delete();
+            return response()->json([
+            'status' => true,
             'message' => 'Evaluation rule deleted successfully'
-        ]);
+            ],200);
+        }
+
     }
 
     public function get_evaluation(){
         $evaluations = Evaluation::select('id', 'name', 'type', 'from', 'to', 'value')->get();
         return response()->json([
-            'status' => 1,
-            'message' => $evaluations
-        ]);
+            'status' => true,
+            'message' => "This is evaluations rules",
+            'data' => $evaluations
+        ],200);
     }
 
     ////////////////for employee////////////////////////
-    public function add_evaluation_emp(Request $r){
-    }
+    // public function add_evaluation_emp(Request $r){
+    // }
 }
