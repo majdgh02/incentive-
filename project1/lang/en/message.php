@@ -1,8 +1,10 @@
 <?php
 
 return[
+    'lang' => 'This is the cureent language',
     'changelangfalse' => 'The language you entered is not supported.',
-    'changelangtrue' => 'The language been have changed.',
+    'changelangtrue' => 'The language have been changed.',
+    'maneger_details' => 'This is the maneger details',
     'create_employee' => 'Employee created successfully.',
     'WH_not_in' => 'You have to enter work houres',
     'CN_not_in' => 'You have to enter calls number',
@@ -16,7 +18,7 @@ return[
     'Call_quality' => 'Call Quality Rate',
     'follow_error_num' => 'Number of follow-up errors',
     'accepternce_rate' => 'Acceptance rate in marketing offers',
-    'prob_tic_num' => 'Number of problem cards',
+    'prob_tic_num' => 'Number of problem tickets',
     'Number_Work_hours' => 'Number of Work hours',
     'Call_number' => 'Call number',
     'error_rate' => 'Error Rate',

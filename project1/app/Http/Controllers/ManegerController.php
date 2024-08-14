@@ -22,6 +22,7 @@ class ManegerController extends Controller
         }else{
             if($maneger->password == $r->password){
                 $maneger->status = true;
+                $maneger->last = now('GMT+3');
                 $maneger->save();
                 return response()->json([
                     'status' => true,
@@ -74,6 +75,15 @@ class ManegerController extends Controller
                 ],422);
             }
         }
+    }
+
+    public function get_details(){
+        $m = Maneger::where('id', 1)->select('name', 'last')->first();
+        return response()->json([
+            'status' => true,
+            'message' => __('message.maneger_details'),
+            'data' => $m
+        ],200);
     }
 
 //     public function end_session(){

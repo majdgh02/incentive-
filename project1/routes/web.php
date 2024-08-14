@@ -32,21 +32,32 @@ use Illuminate\Support\Facades\Route;
 //login
 Route::post('/login', [ManegerController::class, 'login']);
 
-Route::middleware('Check')->group(function(){
-    //change lang
-    Route::get('/greeting/{locale}', function ($locale) {
-        if (in_array($locale,['en', 'ar'])) {
-            session()->put('locale', $locale);
-            return response()->json([
-                'status' => true,
-                'message' => __('message.changelangtrue')
-            ]);
-        }
+//change lang
+Route::get('/greeting/{locale}', function ($locale) {
+    if (in_array($locale,['en', 'ar'])) {
+        session()->put('locale', $locale);
         return response()->json([
-            'status' => false,
-            'message' => __('message.changelangfalse')
-        ]);
-    });
+            'status' => true,
+            'message' => __('message.changelangtrue')
+        ],200);
+    }
+    return response()->json([
+        'status' => false,
+        'message' => __('message.changelangfalse')
+    ],422);
+});
+
+Route::get('language/get', function(){
+    $locale = App::currentLocale();
+    return response()->json([
+        'status' => true,
+        'message' => __('message.lang'),
+        'data' => $locale
+    ],200);
+});
+Route::middleware('Check')->group(function(){
+    //get maneger details
+    Route::get('/maneger/get', [ManegerController::class, 'get_details']);
 
     //logout
     Route::get('/out', [ManegerController::class, 'out']);

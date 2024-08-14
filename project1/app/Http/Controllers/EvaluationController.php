@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Callnum;
+use App\Models\Callsrate;
 use App\Models\Evaluation;
 use DateTime;
 use Illuminate\Http\Request;
@@ -45,7 +46,13 @@ class EvaluationController extends Controller
             $new->to = $r->to;
             $new->value = $r->value;
             $new->save();
-
+            if($r->type == __('message.Call_rate')){
+                $callsrate = Callsrate::where([['rate' , '>=', $r->form], ['rate', '<=', $r->to]])->get();
+                foreach($callsrate as $c){
+                    $c->points = $r->value;
+                    $c->save();
+                }
+            }
             return response()->json([
                 'status' => true,
                 'message' => 'Evaluation rule inrolled successfully'
@@ -141,6 +148,16 @@ class EvaluationController extends Controller
     WorkController $work, TargetController $target, CallsrateController $calls, ErrorrateController $error){
         $json = $r->json()->all();
         $evaluations = $json['evaluations'];
+        $e = [__('message.Number_Work_hours'), __('message.Call_number'), __('message.Problim_tickits_number'), __('message.Follow_errors_number'), __('message.Acceptance_rate'), __('message.Call_quality_rate'), __('message.Suggestion'), __('message.Commitment')];
+        foreach($evaluations as $evaluation){
+            if(!in_array($evaluation['type'],$e)){
+                return response()->json([
+                    'status' => true,
+                    'message' => "The type must be one of these types",
+                    'data' => $e
+                ],422);
+            }
+        }
         $checkwh = false;
         $checkcn = false;
         $checkar = false;
@@ -204,7 +221,7 @@ class EvaluationController extends Controller
         return response()->json([
             __('message.Number_Work_hours') => $n,
             __('message.Call_number') => $c,
-            __('message.Problim_tickits_number') => $p,
+            __('message.prob_tic_num') => $p,
             __('message.Follow_errors_number') => $f,
             __('message.Acceptance_rate') => $a,
             __('message.Call_quality_rate') => $cq,
