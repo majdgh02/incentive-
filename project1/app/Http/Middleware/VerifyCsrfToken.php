@@ -52,5 +52,6 @@ class VerifyCsrfToken extends Middleware
         'puttargetmaneger',
         'puttargetmaneger/delete',
         'puttargetmaneger/get',
+        'evaluations/add'
     ];
 }

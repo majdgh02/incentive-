@@ -32,6 +32,23 @@ class TargetController extends Controller
             ],200);
         }
     }
+
+    public function get_target_value(){
+        $t = Target::where('id', 1)->select('price')->get();
+        if(empty($t)){
+            return response()->json([
+                'status' => false,
+                'message' => 'You did not enter the target point price' ,
+                'data' => $t
+            ],404);
+        }else{
+            return response()->json([
+                'status' => true,
+                'message' => 'This is the price of one point of the Target' ,
+                'data' => $t
+            ],200);
+        }
+    }
     ////// Helperes functions //////////////
     public function put_target_point($id, $old_points, $new_points, $month, $year){
         $e = DB::table('employee_target')->where([['employee_id' , $id],['month' , $month] , ['year' , $year]])->select()->first();

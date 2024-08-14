@@ -8,36 +8,33 @@ use Illuminate\Http\Request;
 
 class CommitmentController extends Controller
 {
-    public function add_commitment(Request $r){
-        $validated = $r->validate([
-            'id' => 'required|exists:employees',
-            'points' => 'required|integer',
-            'time' => 'required|date'
-        ]);
-        $date = new DateTime($r->time);
-        $time = new DateTime('0001-01-01 00:00:00');
-        $interval = $date->diff($time);
+    public function add_commitment($employee_id, $points, $time, TargetController $target){
+        $date = new DateTime($time);
+        $t = new DateTime('0001-01-01 00:00:00');
+        $interval = $date->diff($t);
         $interval->m++;
         $interval->y++;
-        $commitment = Commitment::where([['employee_id' , $r->id],['month' , $interval->m] , ['year' , $interval->y]])->select()->first();
+        $commitment = Commitment::where([['employee_id' , $employee_id],['month' , $interval->m] , ['year' , $interval->y]])->select()->first();
         if(empty($commitment)){
             $new= new Commitment;
-            $new->employee_id = $r->id;
-            $new->points = $r->points;
+            $new->employee_id = $employee_id;
+            $new->points = $points;
             $new->month = $interval->m;
             $new->year = $interval->y;
             $new->save();
+            $target->put_target_point($employee_id, null, $points,$interval->m, $interval->y);
             return response()->json([
-                'status' => 1 ,
+                'status' => true ,
                 'message' => 'Commitment inrolled successfully'
-                ]);
+                ],201);
         }else{
-            $commitment->points = $r->points;
+            $target->put_target_point($employee_id, $commitment->points, $points,$interval->m, $interval->y);
+            $commitment->points = $points;
             $commitment->save();
             return response()->json([
-                'status' => 1 ,
+                'status' => true ,
                 'message' => 'Commitment updated successfully'
-                ]);
+                ],200);
         }
     }
 

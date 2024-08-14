@@ -15,6 +15,7 @@ use App\Http\Controllers\TargetpointController;
 use App\Models\Callnum;
 use App\Models\Maneger;
 use App\Models\Targetpoint;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,6 +33,21 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [ManegerController::class, 'login']);
 
 Route::middleware('Check')->group(function(){
+    //change lang
+    Route::get('/greeting/{locale}', function ($locale) {
+        if (in_array($locale,['en', 'ar'])) {
+            session()->put('locale', $locale);
+            return response()->json([
+                'status' => true,
+                'message' => __('message.changelangtrue')
+            ]);
+        }
+        return response()->json([
+            'status' => false,
+            'message' => __('message.changelangfalse')
+        ]);
+    });
+
     //logout
     Route::get('/out', [ManegerController::class, 'out']);
 
@@ -40,6 +56,9 @@ Route::middleware('Check')->group(function(){
 
     //put target value
     Route::post('/target/put', [TargetController::class, 'target_value']);
+
+    // get target value
+    Route::get('target/get', [TargetController::class, 'get_target_value']);
 
     //create new employee
     Route::post('/employee/create', [EmployeeController::class, 'create']);
@@ -80,7 +99,13 @@ Route::middleware('Check')->group(function(){
     //get Target points for a month "from maneger"
     Route::get('/puttargetmaneger/get', [TargetpointController::class, 'get_targetpoint_month']);
 
-    // add evaluation
+    // get evaluation types
+    Route::get('/evaluation/types', [EvaluationController::class, 'evaluation_types']);
+
+    // get evaluation rules types
+    Route::get('/evaluationrules/types', [EvaluationController::class, 'evaluation_rules_types']);
+
+    // add evaluation for the employee
     Route::post('/evaluations/add', [EvaluationController::class, 'add_evaluation_emp']);
 
     //////////////////////////////////////////////////////

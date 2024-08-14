@@ -10,43 +10,32 @@ use Illuminate\Http\Request;
 
 class CallnumController extends Controller
 {
-    public function add_calnum(Request $r){
-        $validated = $r->validate([
-            'employee_id' => 'required|exists:employees,id',
-            'evaluation_id' => 'required|exists:evaluation,id',
-            'num' => 'required',
-            'time' => 'required|date'
-        ]);
-        $date = new DateTime($r->time);
-        $time = new DateTime('0001-01-01 00:00:00');
-        $interval = $date->diff($time);
+    public function add_calnum ($employee_id, $num, $time){
+        $date = new DateTime($time);
+        $t = new DateTime('0001-01-01 00:00:00');
+        $interval = $date->diff($t);
         $interval->m++;
         $interval->y++;
-        $callnum = Callnum::where([['employee_id' , $r->employee_id],['month' , $interval->m] , ['year' , $interval->y]])->select()->first();
-        $e = Evaluation::where('id' , $r->evaluation_id)->select()->first();
-        if($e->from<=$r->num && $e->to>=$r->num){
-            
-        }
+        $callnum = Callnum::where([['employee_id' , $employee_id],['month' , $interval->m] , ['year' , $interval->y]])->select()->first();
         if(empty($callnum)){
             $new= new Callnum;
-            $new->employee_id = $r->employee_id;
-            $new->evaluation_id = $r->evaluation_id;
-            $new->num = $r->num;
+            $new->employee_id = $employee_id;
+            $new->num = $num;
             $new->month = $interval->m;
             $new->year = $interval->y;
             $new->save();
             return response()->json([
-                'status' => 1 ,
+                'status' => true ,
                 'message' => 'callnumber inrolled successfully'
-                ]);
+                ],201);
         }else{
 
-            $callnum->num = $r->num;
+            $callnum->num = $num;
             $callnum->save();
             return response()->json([
-                'status' => 1 ,
+                'status' => true ,
                 'message' => 'callnumber updated successfully'
-                ]);
+                ],200);
         }
     }
 

@@ -3,41 +3,53 @@
 namespace App\Http\Controllers;
 
 use App\Models\Callquality;
+use App\Models\Evaluation;
 use DateTime;
 use Illuminate\Http\Request;
 
 class CallqualityController extends Controller
 {
-    public function add_callquality(Request $r){
-        $validated = $r->validate([
-            'id' => 'required|exists:employees',
-            'quality' => 'required|in:Excellent,Good,Middle',
-            'time' => 'required|date'
-        ]);
-        $date = new DateTime($r->time);
-        $time = new DateTime('0001-01-01 00:00:00');
-        $interval = $date->diff($time);
+    public function add_callquality($employee_id, $quality, $time, TargetController $target){
+        $date = new DateTime($time);
+        $t = new DateTime('0001-01-01 00:00:00');
+        $interval = $date->diff($t);
         $interval->m++;
         $interval->y++;
-        $callquality = Callquality::where([['employee_id' , $r->id],['month' , $interval->m] , ['year' , $interval->y]])->select()->first();
+        $callquality = Callquality::where([['employee_id' , $employee_id],['month' , $interval->m] , ['year' , $interval->y]])->select()->first();
         if(empty($callquality)){
             $new= new Callquality;
-            $new->employee_id = $r->id;
-            $new->quality = $r->quality;
+            $new->employee_id = $employee_id;
+            $new->quality = $quality;
             $new->month = $interval->m;
             $new->year = $interval->y;
+            $evaluation = Evaluation::where([['type' , 'Call Quality Rate'],['from', '<=', $quality],['to', '>=', $quality]])->select()->first();
+            if(empty($evaluation)){
+                $new->points = 0;
+                $target->put_target_point($employee_id, null, 0, $interval->m, $interval->y);
+            }else{
+                $new->points = $evaluation->value;
+                $target->put_target_point($employee_id, null, $evaluation->value, $interval->m, $interval->y);
+            }
             $new->save();
             return response()->json([
-                'status' => 1 ,
+                'status' => true ,
                 'message' => 'call quality inrolled successfully'
-                ]);
+                ],201);
         }else{
-            $callquality->quality = $r->quality;
+            $evaluation = Evaluation::where([['type' , 'Call Quality Rate'],['from', '<=', $quality],['to', '>=', $quality]])->select()->first();
+            if(empty($evaluation)){
+                $target->put_target_point($employee_id, $callquality->quality, 0, $interval->m, $interval->y);
+                $callquality->points = 0;
+            }else{
+                $target->put_target_point($employee_id, $callquality->quality, $evaluation->value, $interval->m, $interval->y);
+                $callquality->points = $evaluation->value;
+            }
+            $callquality->quality = $quality;
             $callquality->save();
             return response()->json([
-                'status' => 1 ,
+                'status' => true ,
                 'message' => 'call quality updated successfully'
-                ]);
+                ],200);
         }
     }
 

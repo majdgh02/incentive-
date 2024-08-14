@@ -3,41 +3,53 @@
 namespace App\Http\Controllers;
 
 use App\Models\Acceptancerate;
+use App\Models\Evaluation;
 use DateTime;
 use Illuminate\Http\Request;
 
 class AcceptancerateController extends Controller
 {
-    public function add_acceptance(Request $r){
-        $validated = $r->validate([
-            'id' => 'required|exists:employees',
-            'rate' => 'required|integer|between:0,100',
-            'time' => 'required|date'
-        ]);
-        $date = new DateTime($r->time);
-        $time = new DateTime('0001-01-01 00:00:00');
-        $interval = $date->diff($time);
+    public function add_acceptance($employee_id, $rate, $time, TargetController $target){
+        $date = new DateTime($time);
+        $t = new DateTime('0001-01-01 00:00:00');
+        $interval = $date->diff($t);
         $interval->m++;
         $interval->y++;
-        $acceptance = Acceptancerate::where([['employee_id' , $r->id],['month' , $interval->m] , ['year' , $interval->y]])->select()->first();
+        $acceptance = Acceptancerate::where([['employee_id' , $employee_id],['month' , $interval->m] , ['year' , $interval->y]])->select()->first();
         if(empty($acceptance)){
             $new= new Acceptancerate;
-            $new->employee_id = $r->id;
-            $new->rate = $r->rate;
+            $new->employee_id = $employee_id;
+            $new->rate = $rate;
             $new->month = $interval->m;
             $new->year = $interval->y;
+            $evaluation = Evaluation::where([['type' , 'Call Quality Rate'],['from', '<=', $rate],['to', '>=', $rate]])->select()->first();
+            if(empty($evaluation)){
+                $new->points = 0;
+                $target->put_target_point($employee_id, null, 0, $interval->m, $interval->y);
+            }else{
+                $new->points = $evaluation->value;
+                $target->put_target_point($employee_id, null, $evaluation->value, $interval->m, $interval->y);
+            }
             $new->save();
             return response()->json([
-                'status' => 1 ,
+                'status' => true ,
                 'message' => 'Acceptance rate inrolled successfully'
-                ]);
+                ],201);
         }else{
-            $acceptance->rate = $r->rate;
+            $evaluation = Evaluation::where([['type' , 'Call Quality Rate'],['from', '<=', $rate],['to', '>=', $rate]])->select()->first();
+            if(empty($evaluation)){
+                $acceptance->points = 0;
+                $target->put_target_point($employee_id, $acceptance->points, 0, $interval->m, $interval->y);
+            }else{
+                $acceptance->points = $evaluation->value;
+                $target->put_target_point($employee_id, $acceptance->points, $evaluation->value, $interval->m, $interval->y);
+            }
+            $acceptance->rate = $rate;
             $acceptance->save();
             return response()->json([
-                'status' => 1 ,
+                'status' => true ,
                 'message' => 'Acceptance rate updated successfully'
-                ]);
+                ],200);
         }
     }
 

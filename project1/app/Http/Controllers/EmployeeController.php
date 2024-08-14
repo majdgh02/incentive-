@@ -41,7 +41,7 @@ class EmployeeController extends Controller
 
         return response()->json([
             'status' => true,
-            'message' => 'Employee enrolled successfully'
+            'message' => __('message.create_employee')
         ],201);
     }
     //update employee details

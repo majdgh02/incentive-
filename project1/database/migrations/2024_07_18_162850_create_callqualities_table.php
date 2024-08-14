@@ -16,7 +16,8 @@ return new class extends Migration
         Schema::create('callqualities', function (Blueprint $table) {
             $table->id();
             $table->foreignId('employee_id')->constrained('employees');
-            $table->string('quality');
+            $table->integer('quality');
+            $table->integer('points');
             $table->string('month');
             $table->string('year');
         });
