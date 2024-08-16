@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('employee_id')->constrained('employees');
             $table->integer('num');
+            $table->integer('points')->default(0);
             $table->string('month');
             $table->string('year');
         });

@@ -55,11 +55,11 @@ class TargetController extends Controller
         if(empty($e)){
             DB::table('employee_target')->insert([
                 'employee_id' => $id,
-                'target_id' => 1,
                 'value' => $new_points,
                 'month' => $month,
                 'year' => $year
             ]);
+            // return $new_points;
         }else{
             $new = $e->value - $old_points + $new_points;
             DB::table('employee_target')->where([['employee_id' , $id],['month' , $month] , ['year' , $year]])->update(['value' => $new]);

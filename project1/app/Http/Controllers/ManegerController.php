@@ -9,7 +9,7 @@ class ManegerController extends Controller
 {
     // login
     public function login(Request $r){
-        $v = $r->validate([
+        $v = $r->validate([ 
         'password' => 'required'
         ]);
         $id=1;

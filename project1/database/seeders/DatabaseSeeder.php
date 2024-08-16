@@ -17,7 +17,9 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
         $this->call([
-            ManegerSeeder::class
+            ManegerSeeder::class,
+            TargetSeeder::class,
+            EvaluationSeeder::class
         ]);
         \App\Models\Employee::factory(10)->create();
     }

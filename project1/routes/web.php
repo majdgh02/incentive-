@@ -101,6 +101,9 @@ Route::middleware('Check')->group(function(){
     //get evaluation rule
     Route::get('/evaluation/get', [EvaluationController::class, 'get_evaluation']);
 
+    // get evaluation champions
+    Route::get('/evaluation/champions', [EvaluationController::class, 'evaluation_champions']);
+
     //put Target Points from maneger for an employee
     Route::post('/puttargetmaneger', [TargetpointController::class, 'add_targetpoint']);
 
@@ -119,79 +122,82 @@ Route::middleware('Check')->group(function(){
     // add evaluation for the employee
     Route::post('/evaluations/add', [EvaluationController::class, 'add_evaluation_emp']);
 
+    // get evaluation hestory
+    Route::get('evaluation/get/form', [EvaluationController::class, 'get_evaluation_form']);
+
     //////////////////////////////////////////////////////
 
-    //create call number for an employee
-    Route::post('/callnum', [CallnumController::class, 'add_calnum']);
+    // //create call number for an employee
+    // Route::post('/callnum', [CallnumController::class, 'add_calnum']);
 
-    //delete call number
-    Route::delete('/callnum/delete', [CallnumController::class, 'delet_calnum']);
+    // //delete call number
+    // Route::delete('/callnum/delete', [CallnumController::class, 'delet_calnum']);
 
-    //get call number for a month
-    Route::get('/callnum/get', [CallnumController::class, 'get_callnum_month']);
+    // //get call number for a month
+    // Route::get('/callnum/get', [CallnumController::class, 'get_callnum_month']);
 
-    //create problem tickits number for an employee
-    Route::post('/probtic', [ProblemticController::class, 'add_porbtic']);
+    // //create problem tickits number for an employee
+    // Route::post('/probtic', [ProblemticController::class, 'add_porbtic']);
 
-    //delete problem tickits number
-    Route::delete('/probtic/delete', [ProblemticController::class, 'delet_probtic']);
+    // //delete problem tickits number
+    // Route::delete('/probtic/delete', [ProblemticController::class, 'delet_probtic']);
 
-    //get prolem tickits number for a month
-    Route::get('/probtic/get', [ProblemticController::class, 'get_probtic_month']);
+    // //get prolem tickits number for a month
+    // Route::get('/probtic/get', [ProblemticController::class, 'get_probtic_month']);
 
-    //create Follow errorrs number for an employee
-    Route::post('/follow', [ProblemticController::class, 'add_porbtic']);
+    // //create Follow errorrs number for an employee
+    // Route::post('/follow', [ProblemticController::class, 'add_porbtic']);
 
-    //delete Follow errorrs number
-    Route::delete('/follow/delete', [ProblemticController::class, 'delet_probtic']);
+    // //delete Follow errorrs number
+    // Route::delete('/follow/delete', [ProblemticController::class, 'delet_probtic']);
 
-    //get Follow errorrs number for a month
-    Route::get('/follow/get', [ProblemticController::class, 'get_probtic_month']);
+    // //get Follow errorrs number for a month
+    // Route::get('/follow/get', [ProblemticController::class, 'get_probtic_month']);
 
-    //create call quality for an employee
-    Route::post('/callquality', [CallqualityController::class, 'add_callquality']);
+    // //create call quality for an employee
+    // Route::post('/callquality', [CallqualityController::class, 'add_callquality']);
 
-    //delete call quality number
-    Route::delete('/callquality/delete', [CallqualityController::class, 'delet_callquality']);
+    // //delete call quality number
+    // Route::delete('/callquality/delete', [CallqualityController::class, 'delet_callquality']);
 
-    //get call quality number for a month
-    Route::get('/callquality/get', [CallqualityController::class, 'get_callquality_month']);
+    // //get call quality number for a month
+    // Route::get('/callquality/get', [CallqualityController::class, 'get_callquality_month']);
 
-    //create Commitment for an employee
-    Route::post('/commitment', [CommitmentController::class, 'add_commitment']);
+    // //create Commitment for an employee
+    // Route::post('/commitment', [CommitmentController::class, 'add_commitment']);
 
-    //delete Commitment number
-    Route::delete('/commitment/delete', [CommitmentController::class, 'delet_commitment']);
+    // //delete Commitment number
+    // Route::delete('/commitment/delete', [CommitmentController::class, 'delet_commitment']);
 
-    //get Commitment number for a month
-    Route::get('/commitment/get', [CommitmentController::class, 'get_commitment_month']);
+    // //get Commitment number for a month
+    // Route::get('/commitment/get', [CommitmentController::class, 'get_commitment_month']);
 
-    //create Acceptance rate for an employee
-    Route::post('/acceptancerate', [AcceptancerateController::class, 'add_acceptance']);
+    // //create Acceptance rate for an employee
+    // Route::post('/acceptancerate', [AcceptancerateController::class, 'add_acceptance']);
 
-    //delete Acceptance rate
-    Route::delete('/acceptancerate/delete', [AcceptancerateController::class, 'delet_acceptance']);
+    // //delete Acceptance rate
+    // Route::delete('/acceptancerate/delete', [AcceptancerateController::class, 'delet_acceptance']);
 
-    //get Acceptance rate for a month
-    Route::get('/acceptancerate/get', [AcceptancerateController::class, 'get_acceptance_month']);
+    // //get Acceptance rate for a month
+    // Route::get('/acceptancerate/get', [AcceptancerateController::class, 'get_acceptance_month']);
 
-    //create Call return for an employee
-    Route::post('/callreturn', [CallreturnController::class, 'add_callreturn']);
+    // //create Call return for an employee
+    // Route::post('/callreturn', [CallreturnController::class, 'add_callreturn']);
 
-    //delete Call return
-    Route::delete('/callreturn/delete', [CallreturnController::class, 'delet_callreturn']);
+    // //delete Call return
+    // Route::delete('/callreturn/delete', [CallreturnController::class, 'delet_callreturn']);
 
-    //get Call return for a month
-    Route::get('/callreturn/get', [CallreturnController::class, 'get_callreturn_month']);
+    // //get Call return for a month
+    // Route::get('/callreturn/get', [CallreturnController::class, 'get_callreturn_month']);
 
-    //create Suggestion for an employee
-    Route::post('/suggestion', [SuggestionController::class, 'add_suggestion']);
+    // //create Suggestion for an employee
+    // Route::post('/suggestion', [SuggestionController::class, 'add_suggestion']);
 
-    //delete Suggestion
-    Route::delete('/suggestion/delete', [SuggestionController::class, 'delet_suggestion']);
+    // //delete Suggestion
+    // Route::delete('/suggestion/delete', [SuggestionController::class, 'delet_suggestion']);
 
-    //get Suggestion for a month
-    Route::get('/suggestion/get', [SuggestionController::class, 'get_suggestion_month']);
+    // //get Suggestion for a month
+    // Route::get('/suggestion/get', [SuggestionController::class, 'get_suggestion_month']);
 
 
 });

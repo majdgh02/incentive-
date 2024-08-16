@@ -22,33 +22,34 @@ class CallqualityController extends Controller
             $new->quality = $quality;
             $new->month = $interval->m;
             $new->year = $interval->y;
-            $evaluation = Evaluation::where([['type' , 'Call Quality Rate'],['from', '<=', $quality],['to', '>=', $quality]])->select()->first();
+            $evaluation = Evaluation::where([['type' , 'message.Call_quality'],['from', '<=', $quality],['to', '>=', $quality]])->select()->first();
             if(empty($evaluation)){
                 $new->points = 0;
-                $target->put_target_point($employee_id, null, 0, $interval->m, $interval->y);
+                $target->put_target_point($employee_id, 0, 0, $interval->m, $interval->y);
             }else{
                 $new->points = $evaluation->value;
-                $target->put_target_point($employee_id, null, $evaluation->value, $interval->m, $interval->y);
+                $target->put_target_point($employee_id, 0, $evaluation->value, $interval->m, $interval->y);
             }
             $new->save();
             return response()->json([
                 'status' => true ,
-                'message' => 'call quality inrolled successfully'
+                'message' => __('message.cq_inrol_success')
                 ],201);
         }else{
-            $evaluation = Evaluation::where([['type' , 'Call Quality Rate'],['from', '<=', $quality],['to', '>=', $quality]])->select()->first();
+            $evaluation = Evaluation::where([['type' , 'message.Call_quality'],['from', '<=', $quality],['to', '>=', $quality]])->select()->first();
             if(empty($evaluation)){
                 $target->put_target_point($employee_id, $callquality->quality, 0, $interval->m, $interval->y);
                 $callquality->points = 0;
             }else{
-                $target->put_target_point($employee_id, $callquality->quality, $evaluation->value, $interval->m, $interval->y);
+                $old_points = $callquality->points;
+                $target->put_target_point($employee_id, $old_points, $evaluation->value, $interval->m, $interval->y);
                 $callquality->points = $evaluation->value;
             }
             $callquality->quality = $quality;
             $callquality->save();
             return response()->json([
                 'status' => true ,
-                'message' => 'call quality updated successfully'
+                'message' => __('message.cq_update_success')
                 ],200);
         }
     }
@@ -61,7 +62,7 @@ class CallqualityController extends Controller
         Callquality::where('id' , $r->id)->delete();
         return response()->json([
             'status' => 1 ,
-            'message' => 'call quality deleted successfully'
+            'message' => __('message.cq_delete_success')
         ]);
     }
 
@@ -77,7 +78,8 @@ class CallqualityController extends Controller
         $callquality = Callquality::where([['month' , $interval->m] , ['year' , $interval->y]])->get();
         return response()->json([
             'status' => 1,
-            'message' => $callquality
+            'message' => __('message.cq_get'),
+            'data' => $callquality
         ]);
     }
 }

@@ -68,4 +68,9 @@ class Employee extends Model
     {
         return $this->hasMany(Targetpoint::class , 'employee_id');
     }
+
+    public function attendancerate()
+    {
+        return $this->hasMany(Attendancerate::class , 'employee_id');
+    }
 }

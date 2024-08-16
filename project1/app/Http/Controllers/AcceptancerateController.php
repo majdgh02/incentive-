@@ -22,33 +22,34 @@ class AcceptancerateController extends Controller
             $new->rate = $rate;
             $new->month = $interval->m;
             $new->year = $interval->y;
-            $evaluation = Evaluation::where([['type' , 'Call Quality Rate'],['from', '<=', $rate],['to', '>=', $rate]])->select()->first();
+            $evaluation = Evaluation::where([['type' , 'message.accepternce_rate'],['from', '<=', $rate],['to', '>=', $rate]])->select()->first();
             if(empty($evaluation)){
                 $new->points = 0;
-                $target->put_target_point($employee_id, null, 0, $interval->m, $interval->y);
+                $target->put_target_point($employee_id, 0, 0, $interval->m, $interval->y);
             }else{
                 $new->points = $evaluation->value;
-                $target->put_target_point($employee_id, null, $evaluation->value, $interval->m, $interval->y);
+                $target->put_target_point($employee_id, 0, $evaluation->value, $interval->m, $interval->y);
             }
             $new->save();
             return response()->json([
                 'status' => true ,
-                'message' => 'Acceptance rate inrolled successfully'
+                'message' => __('message.ar_inrol_success')
                 ],201);
         }else{
-            $evaluation = Evaluation::where([['type' , 'Call Quality Rate'],['from', '<=', $rate],['to', '>=', $rate]])->select()->first();
+            $evaluation = Evaluation::where([['type' , 'message.accepternce_rate'],['from', '<=', $rate],['to', '>=', $rate]])->select()->first();
             if(empty($evaluation)){
-                $acceptance->points = 0;
                 $target->put_target_point($employee_id, $acceptance->points, 0, $interval->m, $interval->y);
+                $acceptance->points = 0;
             }else{
+                $old_points = $acceptance->points;
+                $target->put_target_point($employee_id, $old_points, $evaluation->value, $interval->m, $interval->y);
                 $acceptance->points = $evaluation->value;
-                $target->put_target_point($employee_id, $acceptance->points, $evaluation->value, $interval->m, $interval->y);
             }
             $acceptance->rate = $rate;
             $acceptance->save();
             return response()->json([
                 'status' => true ,
-                'message' => 'Acceptance rate updated successfully'
+                'message' => __('message.ar_update_success')
                 ],200);
         }
     }
@@ -61,8 +62,8 @@ class AcceptancerateController extends Controller
         Acceptancerate::where('id' , $r->id)->delete();
         return response()->json([
             'status' => 1 ,
-            'message' => 'Acceptance rate deleted successfully'
-        ]);
+            'message' => __('message.ar_delete_success')
+        ],200);
     }
 
     public function get_acceptance_month(Request $r){
@@ -77,7 +78,8 @@ class AcceptancerateController extends Controller
         $acceptance = Acceptancerate::where([['month' , $interval->m] , ['year' , $interval->y]])->get();
         return response()->json([
             'status' => 1,
-            'message' => $acceptance
-        ]);
+            'message' => __('message.ac_get'),
+            'data' => $acceptance
+        ],200);
     }
 }

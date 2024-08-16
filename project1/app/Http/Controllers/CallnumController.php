@@ -26,7 +26,7 @@ class CallnumController extends Controller
             $new->save();
             return response()->json([
                 'status' => true ,
-                'message' => 'callnumber inrolled successfully'
+                'message' => __('message.cn_inrol_success')
                 ],201);
         }else{
 
@@ -34,7 +34,7 @@ class CallnumController extends Controller
             $callnum->save();
             return response()->json([
                 'status' => true ,
-                'message' => 'callnumber updated successfully'
+                'message' => __('message.cn_update_success')
                 ],200);
         }
     }
@@ -47,7 +47,7 @@ class CallnumController extends Controller
         Callnum::where('id' , $r->id)->delete();
         return response()->json([
             'status' => 1 ,
-            'message' => 'callnum deleted successfully'
+            'message' => __('message.cn_delete_success')
         ]);
     }
 
@@ -63,7 +63,8 @@ class CallnumController extends Controller
         $callnum = Callnum::where([['month' , $interval->m] , ['year' , $interval->y]])->get();
         return response()->json([
             'status' => 1,
-            'message' => $callnum
+            'message' => __('message.cn_get'),
+            'data' => $callnum
         ]);
     }
 }

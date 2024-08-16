@@ -21,17 +21,20 @@ class CallsrateController extends Controller
         if(empty($callsrate)){
             $callnum = Callnum::where([['employee_id', $employee_id],['month', $interval->m],['year', $interval->y]])->select()->first();
             $workh = Work::where([['employee_id', $employee_id],['month', $interval->m],['year', $interval->y]])->select()->first();
-            $rate = $callnum->num/$workh->houres;
+            if($workh->houres != 0)
+                $rate = ($callnum->num/$workh->houres)*100;
+            else
+                $rate = 0;
             $new = new Callsrate();
             $new->employee_id = $employee_id;
             $new->rate = $rate;
-            $evaluation = Evaluation::where([['type' , 'Call Rate'],['from', '<=', $rate],['to', '>=', $rate]])->select()->first();
+            $evaluation = Evaluation::where('type' , 'message.Call_rate')->where('from', '<=', $rate)->where('to', '>=', $rate)->select()->first();
             if(empty($evaluation)){
                 $new->points = 0;
-                $target->put_target_point($employee_id, null, 0, $interval->m, $interval->y);
+                $target->put_target_point($employee_id, 0, 0, $interval->m, $interval->y);
             }else{
                 $new->points = $evaluation->value;
-                $target->put_target_point($employee_id, null, $evaluation->value, $interval->m, $interval->y);
+                $target->put_target_point($employee_id, 0, $evaluation->value, $interval->m, $interval->y);
             }
             $new->month = $interval->m;
             $new->year = $interval->y;
@@ -44,14 +47,18 @@ class CallsrateController extends Controller
         else{
             $callnum = Callnum::where([['employee_id', $employee_id],['month', $interval->m],['year', $interval->y]])->select()->first();
             $workh = Work::where([['employee_id', $employee_id],['month', $interval->m],['year', $interval->y]])->select()->first();
-            $rate = $callnum->num/$workh->houres;
+            if($workh->houres != 0)
+                $rate = ($callnum->num/$workh->houres)*100;
+            else
+                $rate = 0;
             $callsrate->rate = $rate;
-            $evaluation = Evaluation::where([['type' , 'Call Rate'],['from', '<=', $rate],['to', '>=', $rate]])->select()->first();
+            $evaluation = Evaluation::where('type' , 'message.Call_rate')->where('from', '<=', $rate)->where('to', '>=', $rate)->select()->first();
             if(empty($evaluation)){
                 $target->put_target_point($employee_id, $callsrate->points, 0, $interval->m, $interval->y);
                 $callsrate->points = 0;
             }else{
-                $target->put_target_point($employee_id, $callsrate->points, $evaluation->value, $interval->m, $interval->y);
+                $old_points = $callsrate->points;
+                $target->put_target_point($employee_id, $old_points, $evaluation->value, $interval->m, $interval->y);
                 $callsrate->points = $evaluation->value;
             }
             $callsrate->save();
