@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             ManegerSeeder::class,
             TargetSeeder::class,
-            EvaluationSeeder::class
+            //EvaluationSeeder::class
         ]);
         \App\Models\Employee::factory(10)->create();
     }
