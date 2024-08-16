@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('value');
             $table->string('month');
             $table->string('year');
+            $table->timestamps();
         });
     }
 

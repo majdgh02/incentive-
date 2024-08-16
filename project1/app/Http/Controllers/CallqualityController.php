@@ -33,7 +33,7 @@ class CallqualityController extends Controller
             $new->save();
             return response()->json([
                 'status' => true ,
-                'message' => __('message.cq_inrol_success')
+                'message' => __('message.inroled_success', ['name' => __('message.callquality')])
                 ],201);
         }else{
             $evaluation = Evaluation::where([['type' , 'message.Call_quality'],['from', '<=', $quality],['to', '>=', $quality]])->select()->first();
@@ -49,7 +49,7 @@ class CallqualityController extends Controller
             $callquality->save();
             return response()->json([
                 'status' => true ,
-                'message' => __('message.cq_update_success')
+                'message' => __('message.update_success', ['name' => __('message.callquality')])
                 ],200);
         }
     }

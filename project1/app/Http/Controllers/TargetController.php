@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Employee;
 use App\Models\Target;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
 class TargetController extends Controller
@@ -72,4 +74,23 @@ class TargetController extends Controller
         DB::table('employee_target')->where([['employee_id' , $id],['month' , $month] , ['year' , $year]])->update(['value' => $new]);
     }
     /////////////////
+
+    public function get_targets(Request $r, EmployeeController $e){
+        $es = $e->get_name_working($r);
+        $array = [];
+        $arraye = [];
+        $i = 1;
+        foreach($es as $em){
+            $tsy = DB::table('employee_target')->where('employee_id', $em->id)->max('year');
+            $tsm = DB::table('employee_target')->where('employee_id', $em->id)->where('year', $tsy)->max('month');
+            $t = [$em->name];
+            $t = [DB::table('employee_target')->where('emploee_id', $em->id)->where('year', $tsy)->where('month', $tsm)->select('value', 'updated_at')->first()];
+            $arraye = Arr::add($arraye, __('message.employeen', ['num', $i]),$t);
+        }
+        return response()->json([
+            'status' => true,
+            'message' => 'this is targets for employees',
+            'data' => $array
+        ]);
+    }
 }

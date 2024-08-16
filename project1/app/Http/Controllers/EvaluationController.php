@@ -34,44 +34,46 @@ class EvaluationController extends Controller
         ]);
         $e = [
             __('message.work_rate'),
-            __('message.Call_rate'),
-            __('message.Call_quality'),
+            __('message.callsrate'),
+            __('message.callquality'),
             __('message.prob_tic_num'),
-            __('message.accepternce_rate'),
+            __('message.Acceptance_rate'),
             __('message.error_rate'),
             __('message.call_return')
         ];
         if($r->to<$r->from){
             return response()->json([
                 'status' => false,
-                'message' => '"To" must be bigger than "From"'
+                'message' => __('message.bigger')
             ],422);
         }
         if(!in_array($r->type, $e)){
             return response()->json([
                 'status' => false,
-                'message' => 'The type must be one of these types',
+                'message' => __('message.types_error'),
                 'data' => $e
             ],422);
         }
-        $evaluations = Evaluation::where('type' , $r->type)->get();
+        $evaluations = Evaluation::all();
         $check = true;
         foreach($evaluations as $e){
-            if($r->from>=$e->from && $r->to<=$e->to){
-                $check = false;
-            }elseif($r->from<=$e->from && $r->to>=$e->to){
-                $check = false;
-            }elseif($r->from>=$e->from && $r->to>=$e->to && $r->from<=$e->to){
-                $check = false;
-            }elseif($r->from<=$e->from && $r->to<=$e->to && $r->to>=$e->from){
-                $check = false;
+            if(__($e->type) == $r->type){
+                if($r->from>=$e->from && $r->to<=$e->to){
+                    $check = false;
+                }elseif($r->from<=$e->from && $r->to>=$e->to){
+                    $check = false;
+                }elseif($r->from>=$e->from && $r->to>=$e->to && $r->from<=$e->to){
+                    $check = false;
+                }elseif($r->from<=$e->from && $r->to<=$e->to && $r->to>=$e->from){
+                    $check = false;
+                }
             }
         }
         if($check){
             $new = new Evaluation;
             $new->name = $r->name;
-            if($r->type == __('message.Call_rate')){
-                $new->type = 'message.Call_rate';
+            if($r->type == __('message.callsrate')){
+                $new->type = 'message.callsrate';
                 $callsrate = Callsrate::all();
                 if(!empty($callsrate))
                     foreach($callsrate as $c){
@@ -82,8 +84,8 @@ class EvaluationController extends Controller
                         }
                     }
             }else{
-                if($r->type == __('message.Call_quality')){
-                    $new->type = 'message.Call_quality';
+                if($r->type == __('message.callquality')){
+                    $new->type = 'message.callquality';
                     $callqu = Callquality::all();
                     if(!empty($callqu))
                         foreach($callqu as $c){
@@ -118,8 +120,8 @@ class EvaluationController extends Controller
                                     }
                                 }
                         }else{
-                            if($r->type == __('message.accepternce_rate')){
-                                $new->type = 'message.accepternce_rate';
+                            if($r->type == __('message.Acceptance_rate')){
+                                $new->type = 'message.Acceptance_rate';
                                 $accept = Acceptancerate::all();
                                 if(!empty($accept))
                                     foreach($accept as $a){
@@ -166,12 +168,12 @@ class EvaluationController extends Controller
             $new->save();
             return response()->json([
                 'status' => true,
-                'message' => 'Evaluation rule inrolled successfully'
+                'message' => __('message.inroled_success', ['name' => __('message.Evaluation_r')])
             ],201);
         }else{
             return response()->json([
                 'status' => false,
-                'message' => 'the range you have inrolled is not correct'
+                'message' => __('message.range_erroe')
             ],422);
         }
     }
@@ -191,17 +193,35 @@ class EvaluationController extends Controller
                 'message' => 'to must be bigger than from'
             ],422);
         }
-        $evaluations = Evaluation::where('type' , $r->type)->wherenot('id' , $r->id)->get();
+        $e = [
+            __('message.work_rate'),
+            __('message.callsrate'),
+            __('message.callquality'),
+            __('message.prob_tic_num'),
+            __('message.Acceptance_rate'),
+            __('message.error_rate'),
+            __('message.call_return')
+        ];
+        if(!in_array($r->type, $e)){
+            return response()->json([
+                'status' => false,
+                'message' => __('message.types_error'),
+                'data' => $e
+            ],422);
+        }
+        $evaluations = Evaluation::wherenot('id' , $r->id)->get();
         $check = true;
         foreach($evaluations as $e){
-            if($r->from>=$e->from && $r->to<=$e->to){
-                $check = false;
-            }elseif($r->from<=$e->from && $r->to>=$e->to){
-                $check = false;
-            }elseif($r->from>=$e->from && $r->to>=$e->to && $r->from<=$e->to){
-                $check = false;
-            }elseif($r->from<=$e->from && $r->to<=$e->to && $r->to>=$e->from){
-                $check = false;
+            if(__($e->type) == $r->type){
+                if($r->from>=$e->from && $r->to<=$e->to){
+                    $check = false;
+                }elseif($r->from<=$e->from && $r->to>=$e->to){
+                    $check = false;
+                }elseif($r->from>=$e->from && $r->to>=$e->to && $r->from<=$e->to){
+                    $check = false;
+                }elseif($r->from<=$e->from && $r->to<=$e->to && $r->to>=$e->from){
+                    $check = false;
+                }
             }
         }
         if($check){
@@ -217,7 +237,7 @@ class EvaluationController extends Controller
                         }
                     }
             }else{
-                if($eva->type == 'message.Call_quality'){
+                if($eva->type == 'message.callquality'){
                     $callqu = Callquality::all();
                     if(!empty($callqu))
                         foreach($callqu as $c){
@@ -251,7 +271,7 @@ class EvaluationController extends Controller
                                     }
                                 }
                         }else{
-                            if($eva->type == 'message.accepternce_rate'){
+                            if($eva->type == 'message.Acceptance_rate'){
                                 $accept = Acceptancerate::all();
                                 if(!empty($accept))
                                     foreach($accept as $a){
@@ -290,13 +310,8 @@ class EvaluationController extends Controller
                     }
                 }
             }
-            $eva->name = $r->name;
-            $eva->type = $r->type;
-            $eva->from = $r->from;
-            $eva->to = $r->to;
-            $eva->value = $r->value;
-            $eva->save();
             if($r->type == __('message.Call_rate')){
+                $eva->type = 'message.Call_rate';
                 $callsrate = Callsrate::all();
                 if(!empty($callsrate))
                     foreach($callsrate as $c){
@@ -307,7 +322,8 @@ class EvaluationController extends Controller
                         }
                     }
             }else{
-                if($r->type == __('message.Call_quality')){
+                if($r->type == __('message.callquality')){
+                    $eva->type = 'message.callquality';
                     $callqu = Callquality::all();
                     if(!empty($callqu))
                         foreach($callqu as $c){
@@ -319,6 +335,7 @@ class EvaluationController extends Controller
                         }
                 }else{
                     if($r->type == __('message.work_rate')){
+                        $eva->type = 'message.work_rate';
                         $work = Attendancerate::all();
                         if(!empty($work))
                             foreach($work as $w){
@@ -330,6 +347,7 @@ class EvaluationController extends Controller
                             }
                     }else{
                         if($r->type == __('message.prob_tic_num')){
+                            $eva->type = 'message.prob_tic_num';
                             $problem = Problemtic::all();
                             if(!empty($problem))
                                 foreach($problem as $p){
@@ -340,7 +358,8 @@ class EvaluationController extends Controller
                                     }
                                 }
                         }else{
-                            if($r->type == __('message.accepternce_rate')){
+                            if($r->type == __('message.Acceptance_rate')){
+                                $eva->type = 'message.Acceptance_rate';
                                 $accept = Acceptancerate::all();
                                 if(!empty($accept))
                                     foreach($accept as $a){
@@ -352,6 +371,7 @@ class EvaluationController extends Controller
                                     }
                             }else{
                                 if($r->type == __('message.error_rate')){
+                                    $eva->type = 'message.error_rate';
                                     $error = Errorrate::all();
                                     if(!empty($error))
                                         foreach($error as $er){
@@ -363,6 +383,7 @@ class EvaluationController extends Controller
                                         }
                                 }else{
                                     if($r->type == __('message.call_return')){
+                                        $eva->type = 'message.call_return';
                                         $callreturn = Callreturn::all();
                                         if(!empty($callreturn))
                                             foreach($callreturn as $cre){
@@ -379,14 +400,19 @@ class EvaluationController extends Controller
                     }
                 }
             }
+            $eva->name = $r->name;
+            $eva->from = $r->from;
+            $eva->to = $r->to;
+            $eva->value = $r->value;
+            $eva->save();
             return response()->json([
                 'status' => true,
-                'message' => 'Evaluation rule updated successfully'
+                'message' => __('message.update_success', ['name' => __('message.Evaluation_r')])
             ],200);
         }else{
             return response()->json([
                 'status' => false,
-                'message' => 'the range you have inrolled is not correct'
+                'message' => __('message.range_erroe')
             ],422);
         }
     }
@@ -399,7 +425,7 @@ class EvaluationController extends Controller
         if(empty($e)){
             return response()->json([
                 'status' => false,
-                'message' => 'Evaluation rule is not exsist'
+                'message' => __('message.not_in', ['name' => __('message.Evaluation_r')])
             ],404);
         }else{
             $e = Evaluation::where('id', $r->id)->select()->first();
@@ -414,7 +440,7 @@ class EvaluationController extends Controller
                         }
                     }
             }else{
-                if($e->type == 'message.Call_quality'){
+                if($e->type == 'message.callquality'){
                     $callqu = Callquality::all();
                     if(!empty($callqu))
                         foreach($callqu as $c){
@@ -447,7 +473,7 @@ class EvaluationController extends Controller
                                     }
                                 }
                         }else{
-                            if($e->type == 'message.accepternce_rate'){
+                            if($e->type == 'message.Acceptance_rate'){
                                 $accept = Acceptancerate::all();
                                 if(!empty($accept))
                                     foreach($accept as $a){
@@ -489,7 +515,7 @@ class EvaluationController extends Controller
             Evaluation::where('id', $r->id)->delete();
             return response()->json([
             'status' => true,
-            'message' => 'Evaluation rule deleted successfully'
+            'message' => __('message.delete_success', ['name' => __('message.Evaluation_r')])
             ],200);
         }
 
@@ -501,7 +527,7 @@ class EvaluationController extends Controller
         $e->type = __($e->type);
         return response()->json([
             'status' => true,
-            'message' => "This is evaluations rules",
+            'message' => __('message.this_is', ['name' => __('message.Evaluation_r')]),
             'data' => $evaluations
         ],200);
     }
@@ -513,12 +539,12 @@ class EvaluationController extends Controller
     ErrorrateController $error, CallreturnController $callre, AttendancerateController $attendance){
         $json = $r->json()->all();
         $evaluations = $json['evaluations'];
-        $ea = [__('message.Number_Work_hours'), __('message.Call_number'), __('message.prob_tic_num'), __('message.Follow_errors_number'), __('message.Acceptance_rate'), __('message.Call_quality_rate'), __('message.call_return')];
+        $ea = [__('message.working_hours_evaluation'), __('message.callnum'), __('message.prob_tic_num'), __('message.follow_error_num'), __('message.Acceptance_rate'), __('message.callquality'), __('message.call_return')];
         foreach($evaluations as $evaluation){
             if(!in_array($evaluation['type'],$ea)){
                 return response()->json([
                     'status' => false,
-                    'message' => "The type must be one of these types",
+                    'message' => __('message.types_error'),
                     'data' => $ea
                 ],422);
             }
@@ -530,18 +556,18 @@ class EvaluationController extends Controller
         $checkcq = false;
         $checkcr = false;
         foreach($evaluations as $e){
-            if($e['type'] == __('message.Number_Work_hours'))
+            if($e['type'] == __('message.working_hours_evaluation'))
             $checkwh = true;
-            if($e['type'] == __('message.Call_number'))
+            if($e['type'] == __('message.callnum'))
             $checkcn = true;
-            if($e['type'] == __('message.Follow_errors_number'))
+            if($e['type'] == __('message.follow_error_num'))
             $checkfe= true;
             if($e['type'] == __('message.Acceptance_rate')){
                 if($e['num'] <= 100 && $e['num'] >= 0){
                     $checkar = true;
                 }
             }
-            if($e['type'] == __('message.Call_quality_rate')){
+            if($e['type'] == __('message.callquality')){
                 if($e['num'] <= 100 && $e['num'] >= 0){
                     $checkcq = true;
                 }
@@ -555,43 +581,43 @@ class EvaluationController extends Controller
             if(!$checkcn)
             return response()->json([
                 'status' => false,
-                'message' => __('message.CN_not_in'),
+                'message' => __('message.not_enterd', ['name' => __('message.callnum')]),
             ],404);
         }
         if($checkcn){
             if(!$checkwh)
                 return response()->json([
                     'status' => false,
-                    'message' => __('message.WH_not_in'),
+                    'message' => __('message.not_enterd', ['name' => __('message.working_hours_evaluation')]),
                 ],404);
         }
         if(!$checkar)
             return response()->json([
                 'status' => false,
-                'message' => __('message.ar_not_in'),
+                'message' => __('message.ranger_error_n', ['name' => __('message.Acceptance_rate')]),
             ],404);
         if(!$checkcq)
             return response()->json([
                 'status' => false,
-                'message' => __('message.cq_not_in'),
+                'message' => __('message.ranger_error_n', ['name' => __('message.callquality')]),
             ],404);
-            if(!$checkcr)
-                return response()->json([
-                    'status' => false,
-                    'message' => __('message.cr_not_in'),
-                ],404);
+        if(!$checkcr)
+            return response()->json([
+                'status' => false,
+                __('message.ranger_error_n', ['name' => __('message.call_return')]),
+            ],404);
         foreach( $evaluations as $e){
-            if($e['type'] == __('message.Number_Work_hours'))
+            if($e['type'] == __('message.working_hours_evaluation'))
                 $n = $work->add_workHours($json['employee_id'], $e['num'], $json['date']);
-            if($e['type'] == __('message.Call_number'))
+            if($e['type'] == __('message.callnum'))
                 $c = $callnum->add_calnum($json['employee_id'], $e['num'], $json['date']);
             if($e['type'] == __('message.prob_tic_num'))
                 $p = $problem->add_porbtic($json['employee_id'], $e['num'], $json['date'], $target);
-            if($e['type'] == __('message.Follow_errors_number'))
+            if($e['type'] == __('message.follow_error_num'))
                 $f = $follow->add_follow($json['employee_id'], $e['num'], $json['date']);
             if($e['type'] == __('message.Acceptance_rate'))
                 $a = $accept->add_acceptance($json['employee_id'], $e['num'], $json['date'] ,$target);
-            if($e['type'] == __('message.Call_quality_rate'))
+            if($e['type'] == __('message.callquality'))
                 $cq = $callqu->add_callquality($json['employee_id'], $e['num'], $json['date'],$target);
             if($e['type'] == __('message.call_return'))
                 $cr = $callre->add_callreturn($json['employee_id'], $e['num'], $json['date'],$target);
@@ -603,12 +629,12 @@ class EvaluationController extends Controller
         if($checkcn && $checkfe)
             $error->add_errorrate($json['employee_id'], $json['date'], $target);
         return response()->json([
-            __('message.Number_Work_hours') => $n,
-            __('message.Call_number') => $c,
+            __('message.working_hours_evaluation') => $n,
+            __('message.callnum') => $c,
             __('message.prob_tic_num') => $p,
-            __('message.Follow_errors_number') => $f,
+            __('message.follow_error_num') => $f,
             __('message.Acceptance_rate') => $a,
-            __('message.Call_quality_rate') => $cq,
+            __('message.callquality') => $cq,
             __('message.call_return') => $cr,
         ]);
     }
@@ -625,21 +651,21 @@ class EvaluationController extends Controller
         $interval->y++;
         $array = [];
         $e = Employee::where('id', $r->id)->select('name')->first();
-        $array = Arr::add($array, __('message.e_data'), $e);
+        $array = Arr::add($array, __('message.employee'), $e);
         $w = Work::where([['employee_id', $r->id],['month', $interval->m],['year', $interval->y]])->select('houres', 'points')->first();
-        $array = Arr::add($array, __('message.Number_Work_hours'), $w);
+        $array = Arr::add($array, __('message.working_hours_evaluation'), $w);
         $a = Attendancerate::where([['employee_id', $r->id],['month', $interval->m],['year', $interval->y]])->select('rate', 'points')->first();
         $array = Arr::add($array, __('message.work_rate'), $a);
         $cn = Callnum::where([['employee_id', $r->id],['month', $interval->m],['year', $interval->y]])->select('num', 'points')->first();
-        $array = Arr::add($array, __('message.Call_number'), $cn);
+        $array = Arr::add($array, __('message.callnum'), $cn);
         $cr = Callsrate::where([['employee_id', $r->id],['month', $interval->m],['year', $interval->y]])->select('rate', 'points')->first();
-        $array = Arr::add($array, __('message.Call_rate'), $cr);
+        $array = Arr::add($array, __('message.callsrate'), $cr);
         $f = Followerror::where([['employee_id', $r->id],['month', $interval->m],['year', $interval->y]])->select('num', 'points')->first();
-        $array = Arr::add($array, __('message.Follow_errors_number'), $f);
+        $array = Arr::add($array, __('message.follow_error_num'), $f);
         $er = Errorrate::where([['employee_id', $r->id],['month', $interval->m],['year', $interval->y]])->select('rate', 'points')->first();
         $array = Arr::add($array, __('message.error_rate'), $er);
         $cq = Callquality::where([['employee_id', $r->id],['month', $interval->m],['year', $interval->y]])->select('quality', 'points')->first();
-        $array = Arr::add($array, __('message.Call_quality'), $cq);
+        $array = Arr::add($array, __('message.callquality'), $cq);
         $p = Problemtic::where([['employee_id', $r->id],['month', $interval->m],['year', $interval->y]])->select('num', 'points')->first();
         $array = Arr::add($array, __('message.prob_tic_num'), $p);
         $ac = Acceptancerate::where([['employee_id', $r->id],['month', $interval->m],['year', $interval->y]])->select('rate', 'points')->first();
@@ -648,22 +674,24 @@ class EvaluationController extends Controller
         $array = Arr::add($array, __('message.call_return'), $cre);
         $t = DB::table('employee_target')->where([['employee_id', $r->id],['month', $interval->m],['year', $interval->y]])->select('value')->first();
         $p = Target::where('id', 1)->select('price')->first();
-        $tp = $t->value * $p->price;
-        $array = Arr::add($array, __('message.target'), $t);
-        $array = Arr::add($array, __('message.target_p'), $tp);
+        if(!empty($t)){
+            $tp = $t->value * $p->price;
+            $array = Arr::add($array, __('message.target'), $t);
+            $array = Arr::add($array, __('message.target_p'), $tp);
+        }
         return response()->json([
             'status' => true,
-            'message' => "This is evaluation form",
+            'message' => __('message.this_is', ['name' => __('message.Evaluation')]),
             'data' => $array
         ],200);
     }
 
     // evaluation types
     public function evaluation_types(){
-        $e = [__('message.Number_Work_hours'), __('message.Call_number'), __('message.prob_tic_num'), __('message.Follow_errors_number'), __('message.Acceptance_rate'), __('message.Call_quality_rate'), __('message.call_return')];
+        $e = [__('message.working_hours_evaluation'), __('message.callnum'), __('message.prob_tic_num'), __('message.follow_error_num'), __('message.Acceptance_rate'), __('message.callquality'), __('message.call_return')];
         return response()->json([
             'status' => true,
-            'message' => "This is evaluation types",
+            'message' => __('message.this_is', ['name' => __('message.Evaluation_t')]),
             'data' => $e
         ],200);
     }
@@ -672,8 +700,8 @@ class EvaluationController extends Controller
     public function evaluation_rules_types(){
         $e = [
             __('message.work_rate'),
-            __('message.Call_rate'),
-            __('message.Call_quality'),
+            __('message.callsrate'),
+            __('message.callquality'),
             __('message.prob_tic_num'),
             __('message.accepternce_rate'),
             __('message.error_rate'),
@@ -681,75 +709,81 @@ class EvaluationController extends Controller
         ];
         return response()->json([
             'status' => true,
-            'message' => "This is evaluation rules types",
+            'message' => __('message.this_is', ['name' => __('message.Evaluation_r_t')]),
             'data' => $e
         ],200);
     }
 
     //evaluation championes
     public function evaluation_champions(){
+        $time = now('GMT+3');
+        $date = new DateTime($time);
+        $t = new DateTime('0001-01-01 00:00:00');
+        $interval = $date->diff($t);
+        $interval->m++;
+        $interval->y++;
         $array = [];
-        $maxas = Attendancerate::max('rate');
-        $as = Attendancerate::where('rate', $maxas)->get();
+        $maxas = Attendancerate::where([['month', $interval->m],['year', $interval->y]])->max('rate');
+        $as = Attendancerate::where([['month', $interval->m],['year', $interval->y]])->where('rate', $maxas)->get();
         $arraya = [];
         $i = 1;
         foreach($as as $a){
             $e= Employee::where('id', $a->employee_id)->select('id', 'name')->first();
-            $arraya =Arr::add($arraya, __('message.employee', ['num' => $i]), [$e, $a->rate]);
+            $arraya =Arr::add($arraya, __('message.employeen', ['num' => $i]), [$e, $a->rate]);
             $i++;}
         $array = Arr::add($array, __('message.work_rate'), $arraya);
-        $maxcs = Callsrate::max('rate');
-        $cs = Callsrate::where('rate', $maxcs)->get();
+        $maxcs = Callsrate::where([['month', $interval->m],['year', $interval->y]])->max('rate');
+        $cs = Callsrate::where([['month', $interval->m],['year', $interval->y]])->where('rate', $maxcs)->get();
         $arrayc = [];
         $i = 1;
         foreach($cs as $c){
             $e= Employee::where('id', $c->employee_id)->select('id', 'name')->first();
-            $arrayc =Arr::add($arrayc, __('message.employee', ['num' => $i]), [$e, $c->rate]);
+            $arrayc =Arr::add($arrayc, __('message.employeen', ['num' => $i]), [$e, $c->rate]);
             $i++;}
         $array =Arr::add($array, __('message.Call_rate'), $arrayc);
-        $maxcqs = Callquality::max('quality');
-        $cqs = Callquality::where('quality', $maxcqs)->get();
+        $maxcqs = Callquality::where([['month', $interval->m],['year', $interval->y]])->max('quality');
+        $cqs = Callquality::where([['month', $interval->m],['year', $interval->y]])->where('quality', $maxcqs)->get();
         $arraycq = [];
         $i = 1;
         foreach($cqs as $cq){
             $e = Employee::where('id', $cq->employee_id)->select('id', 'name')->first();
-            $arraycq = Arr::add($arraycq, __('message.employee', ['num' => $i]), [$e, $cq->quality]);
+            $arraycq = Arr::add($arraycq, __('message.employeen', ['num' => $i]), [$e, $cq->quality]);
             $i++;}
         $array =Arr::add($array, __('message.Call_quality'), $arraycq);
-        $minp = Problemtic::min('num');
-        $ps = Problemtic::where('num', $minp)->get();
+        $minp = Problemtic::where([['month', $interval->m],['year', $interval->y]])->min('num');
+        $ps = Problemtic::where([['month', $interval->m],['year', $interval->y]])->where('num', $minp)->get();
         $arrayp =[];
         $i=1;
         foreach($ps as $p){
             $e = Employee::where('id', $p->employee_id)->select('id', 'name')->first();
-            $arrayp =Arr::add($arrayp, __('message.employee', ['num' => $i]), [$e, $p->num]);
+            $arrayp =Arr::add($arrayp, __('message.employeen', ['num' => $i]), [$e, $p->num]);
             $i++;}
         $array = Arr::add($array, __('message.prob_tic_num'), $arrayp);
-        $maxa = Acceptancerate::max('rate');
-        $acs = Acceptancerate::where('rate', $maxa)->get();
+        $maxa = Acceptancerate::where([['month', $interval->m],['year', $interval->y]])->max('rate');
+        $acs = Acceptancerate::where([['month', $interval->m],['year', $interval->y]])->where('rate', $maxa)->get();
         $arrayac =[];
         $i=1;
         foreach($acs as $ac){
             $e = Employee::where('id', $ac->employee_id)->select('id', 'name')->first();
-            $arrayac =Arr::add($arrayac, __('message.employee', ['num' => $i]), [$e, $ac->rate]);
+            $arrayac =Arr::add($arrayac, __('message.employeen', ['num' => $i]), [$e, $ac->rate]);
             $i++;}
         $array = Arr::add($array, __('message.accepternce_rate'), $arrayac);
-        $mine = Errorrate::min('rate');
-        $ers = Errorrate::where('rate', $mine)->get();
+        $mine = Errorrate::where([['month', $interval->m],['year', $interval->y]])->min('rate');
+        $ers = Errorrate::where([['month', $interval->m],['year', $interval->y]])->where('rate', $mine)->get();
         $arrayer =[];
         $i=1;
         foreach($ers as $er){
             $e = Employee::where('id', $er->employee_id)->select('id', 'name')->first();
-            $arrayer =Arr::add($arrayer, __('message.employee', ['num' => $i]), [$e, $er->rate]);
+            $arrayer =Arr::add($arrayer, __('message.employeen', ['num' => $i]), [$e, $er->rate]);
             $i++;}
         $array = Arr::add($array, __('message.error_rate'), $arrayer);
-        $maxcr = Callreturn::max('rate');
-        $crs = Callreturn::where('rate', $maxcr)->get();
+        $maxcr = Callreturn::where([['month', $interval->m],['year', $interval->y]])->max('rate');
+        $crs = Callreturn::where([['month', $interval->m],['year', $interval->y]])->where('rate', $maxcr)->get();
         $arraycr =[];
         $i=1;
         foreach($crs as $cr){
             $e = Employee::where('id', $cr->employee_id)->select('id', 'name')->first();
-            $arraycr =Arr::add($arraycr, __('message.employee', ['num' => $i]), [$e, $cr->rate]);
+            $arraycr =Arr::add($arraycr, __('message.employeen', ['num' => $i]), [$e, $cr->rate]);
             $i++;}
         $array = Arr::add($array, __('message.call_return'), $arraycr);
         return response()->json([$array,]);

@@ -89,6 +89,9 @@ Route::middleware('Check')->group(function(){
     //get employees by name
     Route::get('/employee/name', [EmployeeController::class, 'get_name']);
 
+    //get employees by name working employees
+    Route::get('/employee/working/name', [EmployeeController::class, 'get_name_working']);
+
     //add evaluation rule
     Route::post('/evaluation', [EvaluationController::class, 'add_evaluation']);
 
@@ -125,6 +128,11 @@ Route::middleware('Check')->group(function(){
     // get evaluation hestory
     Route::get('evaluation/get/form', [EvaluationController::class, 'get_evaluation_form']);
 
+    // get targets with employees
+    Route::get('/target/get/emp', [TargetController::class, 'get_targets']);
+
+
+    
     //////////////////////////////////////////////////////
 
     // //create call number for an employee

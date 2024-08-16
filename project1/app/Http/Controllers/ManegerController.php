@@ -9,7 +9,7 @@ class ManegerController extends Controller
 {
     // login
     public function login(Request $r){
-        $v = $r->validate([ 
+        $v = $r->validate([
         'password' => 'required'
         ]);
         $id=1;
@@ -21,8 +21,9 @@ class ManegerController extends Controller
             ],404);
         }else{
             if($maneger->password == $r->password){
+                $maneger->last = $maneger->currently;
                 $maneger->status = true;
-                $maneger->last = now('GMT+3');
+                $maneger->currently = now('GMT+3');
                 $maneger->save();
                 return response()->json([
                     'status' => true,
@@ -86,9 +87,9 @@ class ManegerController extends Controller
         ],200);
     }
 
-//     public function end_session(){
-//         $m = Maneger::where('id', 1)->select()->first();
-//         $m->status = false;
-//         $m->save();
-//     }
+    public function end_session(){
+        $m = Maneger::where('id', 1)->select()->first();
+        $m->status = false;
+        $m->save();
+    }
 }

@@ -36,7 +36,7 @@ class AttendancerateController extends Controller
             $new->save();
             return response()->json([
                 'status' => true ,
-                'message' => 'Attendance rate inroled successfully'
+                'message' => __('message.inroled_success', ['name' => __('message.working_hours_evaluation')])
             ],201);
         }
         else{
@@ -55,7 +55,7 @@ class AttendancerateController extends Controller
             $attendance->save();
             return response()->json([
                 'status' => true ,
-                'message' => 'Attendance rate Updated successfully'
+                'message' => __('message.update_success', ['name' => __('message.working_hours_evaluation')])
             ],200);
         }
     }

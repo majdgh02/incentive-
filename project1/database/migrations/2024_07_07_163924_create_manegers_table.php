@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('username');
             $table->string('password');
-            $table->dateTime('last')->default(now());
+            $table->dateTime('last')->default('0001-01-01 00:00:00');
+            $table->dateTime('currently')->default(now('GMT+3'));
             $table->boolean('status')->default(false);
             $table->timestamps();
         });

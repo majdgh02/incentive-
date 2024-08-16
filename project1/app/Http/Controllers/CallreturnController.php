@@ -33,7 +33,7 @@ class CallreturnController extends Controller
             $new->save();
             return response()->json([
                 'status' => true ,
-                'message' => 'Call return inrolled successfully'
+                'message' => __('message.inroled_success', ['name' => __('message.call_return')])
                 ],201);
         }else{
             $callreturn->rate = $rate;
@@ -49,7 +49,7 @@ class CallreturnController extends Controller
             $callreturn->save();
             return response()->json([
                 'status' => true ,
-                'message' => 'Call return updated successfully'
+                'message' => __('message.update_success', ['name' => __('message.call_return')])
                 ],200);
         }
     }

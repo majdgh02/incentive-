@@ -26,7 +26,7 @@ class CallnumController extends Controller
             $new->save();
             return response()->json([
                 'status' => true ,
-                'message' => __('message.cn_inrol_success')
+                'message' => __('message.inroled_success', ['name' => __('message.callnum')])
                 ],201);
         }else{
 
@@ -34,7 +34,7 @@ class CallnumController extends Controller
             $callnum->save();
             return response()->json([
                 'status' => true ,
-                'message' => __('message.cn_update_success')
+                'message' => __('message.update_success', ['name' => __('message.callnum')])
                 ],200);
         }
     }

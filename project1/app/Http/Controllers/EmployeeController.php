@@ -41,7 +41,7 @@ class EmployeeController extends Controller
 
         return response()->json([
             'status' => true,
-            'message' => __('message.create_employee')
+            'message' => __('message.inroled_success', ['name' => __('message.employee')])
         ],201);
     }
     //update employee details
@@ -64,7 +64,7 @@ class EmployeeController extends Controller
         if(empty($employee)){
             return response()->json([
                 'status' => false,
-                'message' => 'Employee is not exsist'
+                'message' => __('message.not_in', ['name' => __('message.employee')])
             ],404);
         }else{
             Employee::where('id', $r->id)->update([
@@ -84,7 +84,7 @@ class EmployeeController extends Controller
 
             return response()->json([
                 'status' => true,
-                'message' => 'Employee updated successfully'
+                'message' => __('message.update_success', ['name' => __('message.employee')])
             ],200);
         }
 
@@ -98,13 +98,13 @@ class EmployeeController extends Controller
         if(empty(Employee::where('id', $r->id)->select()->first())){
             return response()->json([
                 'status' => false,
-                'message' => 'Employee is not exsist'
+                'message' => __('message.not_in', ['name' => __('message.employee')])
             ],404);
         }else{
             Employee::where('id', $r->id)->update(['status' => $r->status]);
             return response()->json([
                 'status' => true,
-                'message' => 'Status updated successfully'
+                'message' => __('message.update_success', ['name' => __('message.status')])
             ],200);
         }
     }
@@ -117,13 +117,13 @@ class EmployeeController extends Controller
         if(empty($employee)){
             return response()->json([
                 'status' => false,
-                'message' => 'Employee is not exsist'
+                'message' => __('message.not_in', ['name' => __('message.employee')])
             ],404);
         }else{
             $employee->delete();
             return response()->json([
                 'status' => true,
-                'message' => 'Employee deleted successfully'
+                'message' => __('message.delete_success', ['name' => __('message.employee')])
             ],200);
         }
     }
@@ -136,12 +136,12 @@ class EmployeeController extends Controller
         if(empty($employee)){
             return response()->json([
                 'status' => false,
-                'message' => 'Employee is not exsist'
+                'message' => __('message.not_in', ['name' => __('message.employee')])
             ],404);
         }else{
             return response()->json([
                 'status' => true,
-                'message' => "This is the employee data",
+                'message' => __('message.this_is', ['name' => __('message.employee')]),
                 'data' => $employee
             ],200);
         }
@@ -154,14 +154,33 @@ class EmployeeController extends Controller
             $e = Employee::where('name' , 'like' , "%$r->name%")->get();
             return response()->json([
                 'status' => true ,
-                'message' => "This is the employees data that their name matches $r->name" ,
+                'message' => __('message.this_is', ['name' => __('message.employee')]),
                 'data' => $e
             ],200);
         }else{
             $e = Employee::all();
             return response()->json([
                 'status' => false ,
-                'message' => "This is all employees data",
+                'message' => __('message.this_is_all', ['name' => __('message.employee')]),
+                'data' => $e
+            ],200);
+        }
+    }
+
+    public function get_name_working(Request $r){
+        $r_array = $r->all();
+        if(key_exists('name', $r_array)){
+            $e = Employee::where('name' , 'like' , "%$r->name%")->where('status', true)->get();
+            return response()->json([
+                'status' => true ,
+                'message' => __('message.this_is', ['name' => __('message.employee')]),
+                'data' => $e
+            ],200);
+        }else{
+            $e = Employee::where('status', true)->get();
+            return response()->json([
+                'status' => false ,
+                'message' => __('message.this_is_all', ['name' => __('message.employee')]),
                 'data' => $e
             ],200);
         }

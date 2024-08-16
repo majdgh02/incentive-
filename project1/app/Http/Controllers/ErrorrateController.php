@@ -39,7 +39,7 @@ class ErrorrateController extends Controller
             $new->save();
             return response()->json([
                 'status' => true ,
-                'message' => 'Calls rate inroled successfully'
+                'message' => __('message.inroled_success', ['name' => __('message.error_rate')])
             ],201);
         }
         else{
@@ -59,7 +59,7 @@ class ErrorrateController extends Controller
             $error->save();
             return response()->json([
                 'status' => true ,
-                'message' => 'Error rate Updated successfully'
+                'message' => __('message.update_success', ['name' => __('message.error_rate')])
             ],200);
         }
     }

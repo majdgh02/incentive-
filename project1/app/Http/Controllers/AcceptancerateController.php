@@ -33,7 +33,7 @@ class AcceptancerateController extends Controller
             $new->save();
             return response()->json([
                 'status' => true ,
-                'message' => __('message.ar_inrol_success')
+                'message' => __('message.inroled_success', ['name' => __('message.Acceptance_rate')])
                 ],201);
         }else{
             $evaluation = Evaluation::where([['type' , 'message.accepternce_rate'],['from', '<=', $rate],['to', '>=', $rate]])->select()->first();
@@ -49,7 +49,7 @@ class AcceptancerateController extends Controller
             $acceptance->save();
             return response()->json([
                 'status' => true ,
-                'message' => __('message.ar_update_success')
+                'message' => __('message.update_success', ['name' => __('message.Acceptance_rate')])
                 ],200);
         }
     }
