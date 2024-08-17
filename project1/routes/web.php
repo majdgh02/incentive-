@@ -58,9 +58,6 @@ Route::get('language/get', function(){
 });
 Route::middleware('Check')->group(function(){
 
-
-    Route::get('/nnjj', [TargetController::class, 'get_targets']);
-
     // get targets with employees
     Route::get("/target/getemp", [TargetController::class, 'get_targets']);
 

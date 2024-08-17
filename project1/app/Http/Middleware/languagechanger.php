@@ -18,7 +18,7 @@ class languagechanger
      */
     public function handle(Request $request, Closure $next)
     {
-        $locale = DB::tabel('lang')->where('id', 1)->select('locale')->first();
+        $locale = DB::table('lang')->where('id', 1)->select('locale')->first();
         App::setlocale($locale);
         return $next($request);
     }
