@@ -16,6 +16,7 @@ use App\Models\Callnum;
 use App\Models\Maneger;
 use App\Models\Targetpoint;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,7 +36,7 @@ Route::post('/login', [ManegerController::class, 'login']);
 //change lang
 Route::get('/greeting/{locale}', function ($locale) {
     if (in_array($locale,['en', 'ar'])) {
-        session()->put('locale', $locale);
+        DB::table('lang')->where('íd', 1)->update(['locale' => $locale]);
         return response()->json([
             'status' => true,
             'message' => __('message.changelangtrue')
@@ -56,6 +57,13 @@ Route::get('language/get', function(){
     ],200);
 });
 Route::middleware('Check')->group(function(){
+
+
+    Route::get('/nnjj', [TargetController::class, 'get_targets']);
+
+    // get targets with employees
+    Route::get("/target/getemp", [TargetController::class, 'get_targets']);
+
     //get maneger details
     Route::get('/maneger/get', [ManegerController::class, 'get_details']);
 
@@ -128,11 +136,10 @@ Route::middleware('Check')->group(function(){
     // get evaluation hestory
     Route::get('evaluation/get/form', [EvaluationController::class, 'get_evaluation_form']);
 
-    // get targets with employees
-    Route::get('/target/get/emp', [TargetController::class, 'get_targets']);
 
 
-    
+
+
     //////////////////////////////////////////////////////
 
     // //create call number for an employee

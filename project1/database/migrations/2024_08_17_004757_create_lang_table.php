@@ -13,12 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('commitments', function (Blueprint $table) {
+        Schema::create('lang', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('employee_id')->constrained('employees');
-            $table->integer('points');
-            $table->string('month');
-            $table->string('year');
+            $table->string('locale');
+            $table->timestamps();
         });
     }
 
@@ -29,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('commitments');
+        Schema::dropIfExists('lang');
     }
 };
