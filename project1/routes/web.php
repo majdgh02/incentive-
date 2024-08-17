@@ -36,7 +36,7 @@ Route::post('/login', [ManegerController::class, 'login']);
 //change lang
 Route::get('/greeting/{locale}', function ($locale) {
     if (in_array($locale,['en', 'ar'])) {
-        DB::table('lang')->where('íd', 1)->update(['locale' => $locale]);
+        session()->put('locale', $locale);
         return response()->json([
             'status' => true,
             'message' => __('message.changelangtrue')
@@ -59,7 +59,7 @@ Route::get('language/get', function(){
 Route::middleware('Check')->group(function(){
 
     // get targets with employees
-    Route::get("/target/getemp", [TargetController::class, 'get_targets']);
+    Route::get('/target/getemp', [TargetController::class, 'get_targets']);
 
     //get maneger details
     Route::get('/maneger/get', [ManegerController::class, 'get_details']);
