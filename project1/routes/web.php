@@ -1,22 +1,12 @@
 <?php
 
-use App\Http\Controllers\AcceptancerateController;
-use App\Http\Controllers\CallnumController;
-use App\Http\Controllers\CallqualityController;
-use App\Http\Controllers\CallreturnController;
-use App\Http\Controllers\CommitmentController;
+
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EvaluationController;
 use App\Http\Controllers\ManegerController;
-use App\Http\Controllers\ProblemticController;
-use App\Http\Controllers\SuggestionController;
 use App\Http\Controllers\TargetController;
 use App\Http\Controllers\TargetpointController;
-use App\Models\Callnum;
-use App\Models\Maneger;
-use App\Models\Targetpoint;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 /*

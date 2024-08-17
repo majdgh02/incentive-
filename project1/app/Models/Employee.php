@@ -44,11 +44,6 @@ class Employee extends Model
         return $this->hasMany(Callquality::class , 'employee_id');
     }
 
-    public function commitments()
-    {
-        return $this->hasMany(Commitment::class , 'employee_id');
-    }
-
     public function acceptancerate()
     {
         return $this->hasMany(Acceptancerate::class , 'employee_id');
@@ -57,11 +52,6 @@ class Employee extends Model
     public function callreturns()
     {
         return $this->hasMany(Callreturn::class , 'employee_id');
-    }
-
-    public function suggestions()
-    {
-        return $this->hasMany(Suggestion::class , 'employee_id');
     }
 
     public function targetpoints()
