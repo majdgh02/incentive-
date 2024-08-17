@@ -83,9 +83,9 @@ class TargetController extends Controller
         foreach($es as $em){
             $tsy = DB::table('employee_target')->where('employee_id', $em->id)->max('year');
             $tsm = DB::table('employee_target')->where('employee_id', $em->id)->where('year', $tsy)->max('month');
-            $t = [$em->name];
-            $t = [DB::table('employee_target')->where('emploee_id', $em->id)->where('year', $tsy)->where('month', $tsm)->select('value', 'updated_at')->first()];
-            $arraye = Arr::add($arraye, __('message.employeen', ['num', $i]),$t);
+            //$t = [$em->name];
+            $t = DB::table('employee_target')->where('emploee_id', $em->id)->where('year', $tsy)->where('month', $tsm)->select('value', 'updated_at')->first();
+            $arraye = Arr::add($arraye, __('message.employeen', ['num', $i]),[$t,$em->name]);
         }
         return response()->json([
             'status' => true,
